@@ -1525,7 +1525,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 138995063}
-        m_MethodName: startGame
+        m_MethodName: startThirdGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2180,8 +2180,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33c434cf81e52874e97df9f4f5d592c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 12
-  columns: 15
+  rows: 8
+  columns: 6
   groundCount: 0
   nonGreenGround: []
   foodDisplaySecond: 5

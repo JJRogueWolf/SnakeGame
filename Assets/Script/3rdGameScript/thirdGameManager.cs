@@ -125,7 +125,6 @@ public class thirdGameManager : MonoBehaviour
 
         canvas.worldCamera = snakeObject.snakeCamera;
         canvas.planeDistance = 0.4f;
-        //snake.GetComponent<Snake>().joystick = controller;
     }
 
     public void gamePaused()

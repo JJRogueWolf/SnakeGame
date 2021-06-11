@@ -2263,8 +2263,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cceb20662f5a6de4b85ee498451116d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 8
-  columns: 12
+  rows: 6
+  columns: 8
   groundCount: 0
   nonGreenGround: []
   foodDisplaySecond: 4
@@ -2276,7 +2276,7 @@ MonoBehaviour:
     type: 3}
   snakePrefab: {fileID: 2778185766745878184, guid: 2066b47987209174e86ca0d7d1682a34,
     type: 3}
-  foodPrefab: {fileID: 5961061831970890964, guid: a98f373a128fd924faae1bffb3d81bde,
+  foodPrefab: {fileID: 1633408402521655760, guid: 84069189f0be6ee4488f7597443cf572,
     type: 3}
   uiManager: {fileID: 446950028}
   isfoodSpawned: 0

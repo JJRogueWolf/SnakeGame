@@ -18,10 +18,8 @@ public class Ground : MonoBehaviour
             if(mat.color != Color.green)
             {
                 mat.color = Color.green;
-                // Removing non transform from the list in gameManager to
-                // not spawn food on this tile
-                gameManager.nonGreenGround.Remove(transform);
                 // Decreasing the count of ground left to be green.
+                gameManager.nonGreenGround.Remove(transform);
                 gameManager.groundCount--;
             }
 

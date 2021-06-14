@@ -26,14 +26,12 @@ public class GameUIManager : MonoBehaviour
 
     private void Start()
     {
-        // All the pause and end UIs
         hidePauseScreen();
         hideEndScreen();
     }
 
     private void Update()
     {
-        // print score to text elements
         inGameScoreText.text = score.ToString();
         pauseScoreText.text = score.ToString();
         endScoreText.text = score.ToString();

@@ -12,6 +12,9 @@ namespace SimpleInputNamespace
 
 		private RectTransform wheelTR;
 		private Vector2 centerPoint;
+        
+        [HideInInspector]
+        public bool shouldWheelResetClip = false;
 
 		public float maximumSteeringAngle = 200f;
 		public float wheelReleasedSpeed = 350f;
@@ -54,19 +57,26 @@ namespace SimpleInputNamespace
 			// to initial (zero) rotation by wheelReleasedSpeed degrees per second
 			if( !wheelBeingHeld && wheelAngle != 0f )
 			{
-				float deltaAngle = wheelReleasedSpeed * Time.deltaTime;
-				if( Mathf.Abs( deltaAngle ) > Mathf.Abs( wheelAngle ) )
-					wheelAngle = 0f;
-				else if( wheelAngle > 0f )
-					wheelAngle -= deltaAngle;
-				else
-					wheelAngle += deltaAngle;
-			}
+                if (!shouldWheelResetClip)
+                {
+                    float deltaAngle = wheelReleasedSpeed * Time.deltaTime;
+                    if (Mathf.Abs(deltaAngle) > Mathf.Abs(wheelAngle))
+                        wheelAngle = 0f;
+                    else if (wheelAngle > 0f)
+                        wheelAngle -= deltaAngle;
+                    else
+                        wheelAngle += deltaAngle;
+                }
+                else
+                {
+                    wheelAngle = 0f;
+                }
+            }
 
 			// Rotate the wheel image
 			wheelTR.localEulerAngles = new Vector3( 0f, 0f, -wheelAngle );
 
-			m_value = wheelAngle * valueMultiplier / maximumSteeringAngle;
+            m_value = wheelAngle * valueMultiplier / maximumSteeringAngle;
 			axis.value = m_value;
 		}
 
@@ -85,18 +95,16 @@ namespace SimpleInputNamespace
 
 			float wheelNewAngle = Vector2.Angle( Vector2.up, pointerPos - centerPoint );
 
-			// Do nothing if the pointer is too close to the center of the wheel
-			if( ( pointerPos - centerPoint ).sqrMagnitude >= 400f )
-			{
-				if( pointerPos.x > centerPoint.x )
-					wheelAngle += wheelNewAngle - wheelPrevAngle;
-				else
-					wheelAngle -= wheelNewAngle - wheelPrevAngle;
-			}
+            // Do nothing if the pointer is too close to the center of the wheel
+            if ((pointerPos - centerPoint).sqrMagnitude >= 400f)
+            {
+                if (pointerPos.x > centerPoint.x)
+                    wheelAngle += wheelNewAngle - wheelPrevAngle;
+                else
+                    wheelAngle -= wheelNewAngle - wheelPrevAngle;
+            }
 
-			// Make sure wheel angle never exceeds maximumSteeringAngle
-			wheelAngle = Mathf.Clamp( wheelAngle, -maximumSteeringAngle, maximumSteeringAngle );
-			wheelPrevAngle = wheelNewAngle;
+            wheelPrevAngle = wheelNewAngle;
 		}
 
 		public void OnPointerUp( PointerEventData eventData )

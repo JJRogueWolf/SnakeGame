@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using SimpleInputNamespace;
 
 public class thirdGameManager : MonoBehaviour
 {
+
+    public static thirdGameManager Instance { get; private set; }
+
     [SerializeField]
     private int rows = 5;
     [SerializeField]
@@ -21,6 +24,13 @@ public class thirdGameManager : MonoBehaviour
     [SerializeField]
     private int snakeSpeed = 1;
 
+    [Header("Controller")]
+    [SerializeField]
+    private bool shouldRotateSmoothToZero = false;
+    [SerializeField]
+    private GameObject controller;
+
+    [Header("Canvas")]
     [SerializeField]
     private Canvas canvas;
 
@@ -53,6 +63,7 @@ public class thirdGameManager : MonoBehaviour
         createGround();
         surroundWall();
         snake();
+        controller.GetComponent<SteeringWheel>().shouldWheelResetClip = shouldRotateSmoothToZero;
     }
 
     private void Update()
@@ -64,8 +75,7 @@ public class thirdGameManager : MonoBehaviour
         }
         timer += Time.deltaTime;
         int seconds = (int)timer % 60;
-        print(seconds);
-        if (!isfoodSpawned && nonGreenGround.Count > 0)
+        if (!isfoodSpawned && nonGreenGround.Count > 2)
         {
             if (seconds % (foodDisplaySecond + Random.Range(5,10)) == 0)
             {
@@ -125,6 +135,7 @@ public class thirdGameManager : MonoBehaviour
 
         canvas.worldCamera = snakeObject.snakeCamera;
         canvas.planeDistance = 0.4f;
+        //snake.GetComponent<Snake>().joystick = controller;
     }
 
     public void gamePaused()

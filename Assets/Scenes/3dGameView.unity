@@ -148,6 +148,11 @@ PrefabInstance:
       propertyPath: maximumSteeringAngle
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 114646804193482684, guid: 5fe76d8874b5ab349a260c69ea0dece9,
+        type: 3}
+      propertyPath: shouldWheelResetClip
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 224650763690852736, guid: 5fe76d8874b5ab349a260c69ea0dece9,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1279,6 +1284,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 636279081}
   m_CullTransparentMesh: 0
+--- !u!1 &650904051 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1901626446224702, guid: 5fe76d8874b5ab349a260c69ea0dece9,
+    type: 3}
+  m_PrefabInstance: {fileID: 38118632}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1525,7 +1536,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 138995063}
-        m_MethodName: startThirdGame
+        m_MethodName: startGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2180,12 +2191,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33c434cf81e52874e97df9f4f5d592c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 8
-  columns: 6
+  rows: 15
+  columns: 12
   groundCount: 0
   nonGreenGround: []
   foodDisplaySecond: 5
   snakeSpeed: 1
+  shouldRotateSmoothToZero: 1
+  controller: {fileID: 650904051}
   canvas: {fileID: 446950026}
   groundPrefab: {fileID: 3011433113060393950, guid: c1fcb195e9017b841be7aec4a3f8aae4,
     type: 3}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +18,19 @@ public class thirdGameManager : MonoBehaviour
     [HideInInspector]
     public List<Transform> nonGreenGround = new List<Transform>();
 
+    [HideInInspector]
+    public List<Transform> foodSpawnableArea = new List<Transform>();
+
     [SerializeField]
     private float foodDisplaySecond = 8f;
+
+    [SerializeField]
+    public GameObject pizzaIconTarget;
+
+    [Header("Camera")]
+    [HideInInspector]
+    public GameObject _camera;
+    public GameObject mapCamera;
 
     [Header("Snake")]
     [SerializeField]
@@ -47,11 +59,12 @@ public class thirdGameManager : MonoBehaviour
     [Header("UI")]
     public GameUIManager uiManager;
 
-    private float positionOffset = 0.5f;
+    private float positionOffset = 0.2f;
 
     private thirdGameSnake snakeObject;
 
-    private bool isGamePause = false;
+    [HideInInspector]
+    public bool isGamePause = false;
     [HideInInspector]
     public bool isfoodSpawned = false;
 
@@ -77,7 +90,7 @@ public class thirdGameManager : MonoBehaviour
         int seconds = (int)timer % 60;
         if (!isfoodSpawned && nonGreenGround.Count > 2)
         {
-            if (seconds % (foodDisplaySecond + Random.Range(5,10)) == 0)
+            if (seconds % (foodDisplaySecond + UnityEngine.Random.Range(5,10)) == 0)
             {
                 StartCoroutine(destroyFood(spawnFood()));
             }
@@ -97,9 +110,25 @@ public class thirdGameManager : MonoBehaviour
                 GameObject groundTile = Instantiate(groundPrefab, parentGround.transform);
                 groundTile.transform.localPosition = new Vector3(column + positionOffset, 0, row + positionOffset);
                 nonGreenGround.Add(groundTile.transform);
+                if (row != 0 || row != rows - 1)
+                {
+                    if (column != 0 || column != columns - 1)
+                    {
+                        foodSpawnableArea.Add(groundTile.transform);
+                    }
+                }
                 groundTile.GetComponent<thirdGameGround>().gameManager = this;
             }
         }
+        
+        float cameraHeight = Mathf.Max(rows,columns) * 1.6f;
+        if (cameraHeight < 4)
+        {
+            cameraHeight = 4;
+        }
+        
+        mapCamera.transform.localPosition = new Vector3(((float)columns / 2) - positionOffset * 1.5f, cameraHeight, (float)rows / 2f);
+
     }
 
     private void surroundWall()
@@ -109,20 +138,20 @@ public class thirdGameManager : MonoBehaviour
         parentWall.transform.position = Vector3.zero;
 
         GameObject leftWall = Instantiate(wallPrefab, parentWall.transform);
-        leftWall.transform.localPosition = new Vector3(-positionOffset/2, positionOffset, (float)rows / 2);
-        leftWall.transform.localScale = new Vector3(positionOffset, 1, rows + 1);
+        leftWall.transform.localPosition = new Vector3(-positionOffset * 1.5f, positionOffset / 2, ((float)rows / 2) - positionOffset * 1.5f);
+        leftWall.transform.localScale = new Vector3(positionOffset, 0.2f, rows + 0.2f);
 
         GameObject rightWall = Instantiate(wallPrefab, parentWall.transform);
-        rightWall.transform.localPosition = new Vector3(columns + (positionOffset/2) , positionOffset, (float)rows / 2);
-        rightWall.transform.localScale = new Vector3(positionOffset, 1, rows + 1);
+        rightWall.transform.localPosition = new Vector3(columns - positionOffset * 1.5f, positionOffset / 2, ((float)rows / 2) - positionOffset * 1.5f);
+        rightWall.transform.localScale = new Vector3(positionOffset, 0.2f, rows + 0.2f);
 
         GameObject topWall = Instantiate(wallPrefab, parentWall.transform);
-        topWall.transform.localPosition = new Vector3((float)columns / 2, positionOffset, rows + (positionOffset / 2));
-        topWall.transform.localScale = new Vector3(columns + 1, 1, positionOffset);
+        topWall.transform.localPosition = new Vector3(((float)columns / 2) - positionOffset * 1.5f, positionOffset / 2, rows - positionOffset * 1.5f);
+        topWall.transform.localScale = new Vector3(columns + 0.2f, 0.2f, positionOffset);
 
         GameObject bottomWall = Instantiate(wallPrefab, parentWall.transform);
-        bottomWall.transform.localPosition = new Vector3((float)columns / 2, positionOffset, - (positionOffset / 2));
-        bottomWall.transform.localScale = new Vector3(columns + 1, 1, positionOffset);
+        bottomWall.transform.localPosition = new Vector3(((float)columns / 2) - positionOffset * 1.5f, positionOffset / 2, -(positionOffset * 1.5f));
+        bottomWall.transform.localScale = new Vector3(columns + 0.2f, 0.2f, positionOffset);
     }
 
     private void snake()
@@ -134,6 +163,7 @@ public class thirdGameManager : MonoBehaviour
         snakeObject.snakeSpeed = snakeSpeed;
 
         canvas.worldCamera = snakeObject.snakeCamera;
+        _camera = snakeObject.snakeCamera.gameObject;
         canvas.planeDistance = 0.4f;
         //snake.GetComponent<Snake>().joystick = controller;
     }
@@ -141,24 +171,15 @@ public class thirdGameManager : MonoBehaviour
     public void gamePaused()
     {
         isGamePause = true;
-
-        if (snakeObject != null)
-        {
-            snakeObject.isHit = true;
-        }
     }
 
     public void gameResumed()
     {
         isGamePause = false;
-        if (snakeObject != null)
-        {
-            snakeObject.isHit = false;
-        }
     }
 
     private GameObject spawnFood() {
-        GameObject food = Instantiate(foodPrefab, nonGreenGround[Random.Range(0, nonGreenGround.Count)].transform.position, Quaternion.identity);
+        GameObject food = Instantiate(foodPrefab, foodSpawnableArea[UnityEngine.Random.Range(0, foodSpawnableArea.Count)].transform.position, Quaternion.identity);
         isfoodSpawned = true;
         return food;
     }

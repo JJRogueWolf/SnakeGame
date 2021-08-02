@@ -14,12 +14,18 @@ public class GameUIManager : MonoBehaviour
 
     [SerializeField]
     private Text inGameScoreText;
+    [SerializeField]
+    private Text inGameScoreTextShadow;
 
     [SerializeField]
     private Text pauseScoreText;
+    [SerializeField]
+    private Text pauseScoreShadow;
 
     [SerializeField]
     private Text endScoreText;
+    [SerializeField]
+    private Text endScoreTextShadow;
 
     [HideInInspector]
     public int score = 0;
@@ -32,9 +38,13 @@ public class GameUIManager : MonoBehaviour
 
     private void Update()
     {
+        // Displaying the scores on the Text and its shadow
         inGameScoreText.text = score.ToString();
-        pauseScoreText.text = score.ToString();
+        inGameScoreTextShadow.text = score.ToString();
+        pauseScoreText.text = score.ToString() + " Pizza\nCollected";
+        pauseScoreShadow.text = score.ToString() + " Pizza\nCollected";
         endScoreText.text = score.ToString();
+        endScoreTextShadow.text = score.ToString();
     }
 
     public void showPauseScreen()

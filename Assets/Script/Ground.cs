@@ -20,6 +20,7 @@ public class Ground : MonoBehaviour
                 mat.color = Color.green;
                 // Decreasing the count of ground left to be green.
                 gameManager.nonGreenGround.Remove(transform);
+                gameManager.foodSpawnableArea.Remove(transform);
                 gameManager.groundCount--;
             }
 

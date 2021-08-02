@@ -107,5 +107,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54be0c3fcf72dde4a8315a4fd7294d37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGreen: 0
   gameManager: {fileID: 0}

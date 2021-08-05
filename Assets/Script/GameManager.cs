@@ -50,14 +50,18 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public GameUIManager uiManager;
 
-    private float positionOffset = 0.2f;
+    private float positionOffset = 0.5f;
+    private float scaleOffset = 0.5f;
 
-    private snake snakeObject;
+    private PixelSnakeControlls snakeObject;
 
     [HideInInspector]
     public bool isGamePause = false;
     [HideInInspector]
     public bool isfoodSpawned = false;
+
+    [HideInInspector]
+    public bool isGameOver = false;
 
     private float timer = 0.0f;
     
@@ -77,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(groundCount < 1)
+        if (isGameOver)
         {
             // Game Ended
             gamePaused();
@@ -89,9 +93,10 @@ public class GameManager : MonoBehaviour
         int seconds = (int)timer % 60;
         if (!isfoodSpawned && nonGreenGround.Count > 2)
         {
-            if (seconds % (foodDisplaySecond + UnityEngine.Random.Range(5,10)) == 0)
+            if (seconds % (foodDisplaySecond + UnityEngine.Random.Range(5, 10)) == 0)
             {
-                if(foodSpawnableArea.Count > 0){
+                if (foodSpawnableArea.Count > 0)
+                {
                     // Coroutine to destroy the food after the given time
                     StartCoroutine(destroyFood(spawnFood()));
                 }
@@ -138,15 +143,10 @@ public class GameManager : MonoBehaviour
             // For height below 4, the camera height is kept to 4
             cameraHeight = 4;
             // adjusting the plane distance for UI canvas
-            uiManager.gameObject.GetComponent<Canvas>().planeDistance = (cameraHeight / 2);
-            _camera.transform.localPosition = new Vector3(((float)columns / 2) - positionOffset, cameraHeight, ((float)rows / 2f) - positionOffset);
+            
         }
-        else
-        {
-            uiManager.gameObject.GetComponent<Canvas>().planeDistance = (cameraHeight / 2) - positionOffset * (cameraHeight / 2);
-            // Adjusting the Camera Height with a small offset since the pivot is in the center
-            _camera.transform.localPosition = new Vector3(((float)columns / 2) - positionOffset, cameraHeight - positionOffset * (cameraHeight / 2), ((float)rows / 2f) - positionOffset);
-        }
+        uiManager.gameObject.GetComponent<Canvas>().planeDistance = (cameraHeight / 2);
+        _camera.transform.localPosition = new Vector3(((float)columns / 2), cameraHeight, ((float)rows / 2f));
 
     }
     
@@ -158,28 +158,28 @@ public class GameManager : MonoBehaviour
         parentWall.transform.position = Vector3.zero;
 
         GameObject leftWall = Instantiate(wallPrefab, parentWall.transform);
-        leftWall.transform.localPosition = new Vector3(-positionOffset * 1.5f, positionOffset/2, ((float)rows / 2) - positionOffset * 1.5f);
-        leftWall.transform.localScale = new Vector3(positionOffset, 0.2f, rows + 0.2f);
+        leftWall.transform.localPosition = new Vector3(0, positionOffset / 2, ((float)rows/2));
+        leftWall.transform.localScale = new Vector3(scaleOffset, scaleOffset, rows + scaleOffset);
 
         GameObject rightWall = Instantiate(wallPrefab, parentWall.transform);
-        rightWall.transform.localPosition = new Vector3(columns - positionOffset * 1.5f, positionOffset / 2, ((float)rows / 2) - positionOffset * 1.5f);
-        rightWall.transform.localScale = new Vector3(positionOffset, 0.2f, rows + 0.2f);
+        rightWall.transform.localPosition = new Vector3(columns + (scaleOffset/2), positionOffset / 2, ((float)rows / 2));
+        rightWall.transform.localScale = new Vector3(scaleOffset, scaleOffset, rows + scaleOffset);
 
         GameObject topWall = Instantiate(wallPrefab, parentWall.transform);
-        topWall.transform.localPosition = new Vector3(((float)columns / 2) - positionOffset * 1.5f, positionOffset / 2, rows - positionOffset * 1.5f);
-        topWall.transform.localScale = new Vector3(columns + 0.2f, 0.2f, positionOffset);
+        topWall.transform.localPosition = new Vector3(((float)columns / 2), positionOffset / 2, rows + (scaleOffset / 2));
+        topWall.transform.localScale = new Vector3(columns + scaleOffset, scaleOffset, scaleOffset);
 
         GameObject bottomWall = Instantiate(wallPrefab, parentWall.transform);
-        bottomWall.transform.localPosition = new Vector3(((float)columns / 2) - positionOffset * 1.5f, positionOffset / 2, -(positionOffset * 1.5f));
-        bottomWall.transform.localScale = new Vector3(columns + 0.2f, 0.2f, positionOffset);
+        bottomWall.transform.localPosition = new Vector3(((float) columns/2), positionOffset / 2, 0);
+        bottomWall.transform.localScale = new Vector3(columns + scaleOffset, scaleOffset, scaleOffset);
     }
 
     // Spawning Snake to the center of the grid
     private void snake()
     {
-        GameObject snake = Instantiate(snakePrefab, new Vector3((float)columns / 2 + positionOffset, 0, (float)rows / 2 + positionOffset), Quaternion.Euler(new Vector3(0f, 90f, 0f)));
+        GameObject snake = Instantiate(snakePrefab, new Vector3((float)columns / 2 + positionOffset, 0.5f, (float)rows / 2 + positionOffset), Quaternion.Euler(new Vector3(0f, 90f, 0f)));
         snake.name = "Snake";
-        snakeObject = snake.GetComponent<snake>();
+        snakeObject = snake.GetComponent<PixelSnakeControlls>();
         snakeObject.gameManager = this;
         snakeObject.snakeSpeed = snakeSpeed;
     }
@@ -226,15 +226,20 @@ public class GameManager : MonoBehaviour
     // Scaling the pizza
     IEnumerator ScalePizza(Transform pizza, Vector3 startPosition, Vector3 endPosition, Action onComplete)
     {
+        float height = startPosition.y + 5f;
+        Vector3 heightVector = new Vector3(startPosition.x, height, startPosition.z);
         float time = 0;
         while (time < 0.3f)
         {
             time += 0.5f * Time.deltaTime;
-            pizza.position = startPosition;
+            pizza.position = startPosition;            
+            pizza.position = Vector3.Lerp(startPosition, heightVector, time);
             pizza.localScale = Vector3.Lerp(pizza.localScale, new Vector3(3f, 3f, 3f), time);
             yield return new WaitForEndOfFrame();
+
         }
         yield return null;
+        startPosition = heightVector;
         StartCoroutine(MovePizza(pizza, startPosition, endPosition, onComplete));
     }
     // Moving the pizza to the point section animation

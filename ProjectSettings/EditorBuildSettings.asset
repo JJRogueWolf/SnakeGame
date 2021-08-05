@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/LandingScene.unity
     guid: f6210cf9cc351a44d8a7f9af47cf2768
   - enabled: 1
-    path: Assets/Scenes/GameView.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/Scenes/PixelSanke.unity
+    guid: a05fa7217604f9d4581fc8499f35a0c3
   - enabled: 1
     path: Assets/Scenes/3dGameView.unity
     guid: 79002a47705517145b2ef75610c34327

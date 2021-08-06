@@ -76,7 +76,7 @@ public class PixelSnakeControlls : MonoBehaviour
 
         if (gameManager.isGamePause)
         {
-            transform.localScale = new Vector3(Mathf.PingPong(transform.lossyScale.x, transform.lossyScale.x + 1), Mathf.PingPong(transform.lossyScale.y, transform.lossyScale.y + 1), Mathf.PingPong(transform.lossyScale.y, transform.lossyScale.y + 1));
+            transform.localScale = new Vector3(Mathf.PingPong(1, 2), Mathf.PingPong(1, 2), Mathf.PingPong(1, 2));
         }
     }
 
@@ -104,11 +104,13 @@ public class PixelSnakeControlls : MonoBehaviour
         {
             // Play eat audio
             Destroy(other.gameObject);
+            growBody();
             audioSource.clip = eatAudio;
             audioSource.Play();
-            growBody();
             gameManager.isfoodSpawned = false;
             gameManager.uiManager.score += 1;
+            gameManager.pizzaArtAnimator.SetBool("scored", true);
+            StartCoroutine(Scored());
         }
         if (other.gameObject.tag == "Body")
         {
@@ -117,9 +119,17 @@ public class PixelSnakeControlls : MonoBehaviour
             audioSource.Play();
             // Camera shake animation
             StartCoroutine(shake(1, 10));
+            StartCoroutine(EndGame());
 
             gameManager.isGamePause = true;
         }
+    }
+
+    IEnumerator Scored()
+    {
+        yield return new WaitForSeconds(1);
+        gameManager.pizzaArtAnimator.SetBool("scored", false);
+
     }
 
     IEnumerator EndGame()

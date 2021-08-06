@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     public GameObject pizzaIconTarget;
+    [HideInInspector]
+    public Animator pizzaArtAnimator;
 
     [Header("Snake")]
     [SerializeField]
@@ -68,6 +70,7 @@ public class GameManager : MonoBehaviour
 
     private float timer = 0.0f;
     
+    
     void Start()
     {
         // Total count of grid
@@ -78,6 +81,8 @@ public class GameManager : MonoBehaviour
         surroundWall();
         // Spawn snake
         snake();
+
+        pizzaArtAnimator = pizzaIconTarget.GetComponent<Animator>();
 
         controller.GetComponent<SteeringWheel>().shouldWheelResetClip = shouldRotateSmoothToZero;
     }
@@ -258,5 +263,19 @@ public class GameManager : MonoBehaviour
         }
         onComplete.Invoke();
         Destroy(pizza.gameObject);
+    }
+
+    public IEnumerator shake(float duration)
+    {
+        Vector3 originalPos = pizzaIconTarget.transform.localPosition;
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        pizzaIconTarget.transform.localPosition = originalPos;
     }
 }

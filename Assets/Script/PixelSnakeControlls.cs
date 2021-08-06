@@ -31,6 +31,8 @@ public class PixelSnakeControlls : MonoBehaviour
     private AudioClip hitAudio;
     [SerializeField]
     private AudioClip eatAudio;
+    [SerializeField]
+    private AudioClip loseAudio;
 
     void Start()
     {
@@ -71,6 +73,11 @@ public class PixelSnakeControlls : MonoBehaviour
                 index++;
             }
         }
+
+        if (gameManager.isGamePause)
+        {
+            transform.localScale = new Vector3(Mathf.PingPong(transform.lossyScale.x, transform.lossyScale.x + 1), Mathf.PingPong(transform.lossyScale.y, transform.lossyScale.y + 1), Mathf.PingPong(transform.lossyScale.y, transform.lossyScale.y + 1));
+        }
     }
 
     void growBody(){
@@ -96,21 +103,30 @@ public class PixelSnakeControlls : MonoBehaviour
         if (other.gameObject.tag == "Food")
         {
             // Play eat audio
+            Destroy(other.gameObject);
             audioSource.clip = eatAudio;
             audioSource.Play();
             growBody();
-            gameManager.PizzaCollect(other.transform.position, () =>
-            {
-                gameManager.isfoodSpawned = false;
-                gameManager.uiManager.score += 1;
-            });
-            // Destroy collected Pizza
-            Destroy(other.gameObject);
+            gameManager.isfoodSpawned = false;
+            gameManager.uiManager.score += 1;
         }
         if (other.gameObject.tag == "Body")
         {
-            gameManager.isGameOver = true;
+            gameManager.mainBgm.Stop();
+            audioSource.clip = loseAudio;
+            audioSource.Play();
+            // Camera shake animation
+            StartCoroutine(shake(1, 10));
+
+            gameManager.isGamePause = true;
         }
+    }
+
+    IEnumerator EndGame()
+    {
+        yield return new WaitForSeconds(1);
+        gameManager.isGameOver = true;
+
     }
 
     IEnumerator SmoothRotate(Vector3 reflectedDirection)

@@ -158,7 +158,7 @@ public class GameManager : MonoBehaviour
         parentWall.transform.position = Vector3.zero;
 
         GameObject leftWall = Instantiate(wallPrefab, parentWall.transform);
-        leftWall.transform.localPosition = new Vector3(0, positionOffset / 2, ((float)rows/2));
+        leftWall.transform.localPosition = new Vector3(0, positionOffset / 2, ((float)rows/2) + (scaleOffset / 2));
         leftWall.transform.localScale = new Vector3(scaleOffset, scaleOffset, rows + scaleOffset);
 
         GameObject rightWall = Instantiate(wallPrefab, parentWall.transform);
@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
         rightWall.transform.localScale = new Vector3(scaleOffset, scaleOffset, rows + scaleOffset);
 
         GameObject topWall = Instantiate(wallPrefab, parentWall.transform);
-        topWall.transform.localPosition = new Vector3(((float)columns / 2), positionOffset / 2, rows + (scaleOffset / 2));
+        topWall.transform.localPosition = new Vector3(((float)columns / 2) + (scaleOffset / 2), positionOffset / 2, rows + (scaleOffset / 2));
         topWall.transform.localScale = new Vector3(columns + scaleOffset, scaleOffset, scaleOffset);
 
         GameObject bottomWall = Instantiate(wallPrefab, parentWall.transform);

@@ -21,9 +21,21 @@ public class PixelSnakeControlls : MonoBehaviour
     private List<GameObject> bodyParts = new List<GameObject>();
     private List<Vector3> lastPosition = new List<Vector3>();
 
+    [SerializeField]
+    private AnimationCurve shakeCurve;
+
+    private AudioSource audioSource;
+
+    [Header("Audio")]
+    [SerializeField]
+    private AudioClip hitAudio;
+    [SerializeField]
+    private AudioClip eatAudio;
+
     void Start()
     {
         bodySpeed = snakeSpeed;
+        audioSource = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -70,6 +82,11 @@ public class PixelSnakeControlls : MonoBehaviour
     {
         if (other.gameObject.tag == "Wall")
         {
+            // Play Hit audio
+            audioSource.clip = hitAudio;
+            audioSource.Play();
+            // Camera shake animation
+            StartCoroutine(shake(1, 10));
             contactPoint = other.contacts[0];
             reflectDirection = Vector3.Reflect(transform.forward, contactPoint.normal);
             isHit = true;
@@ -78,6 +95,9 @@ public class PixelSnakeControlls : MonoBehaviour
 
         if (other.gameObject.tag == "Food")
         {
+            // Play eat audio
+            audioSource.clip = eatAudio;
+            audioSource.Play();
             growBody();
             gameManager.PizzaCollect(other.transform.position, () =>
             {
@@ -97,5 +117,23 @@ public class PixelSnakeControlls : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         isHit = false;
+    }
+
+    public IEnumerator shake(float duration, float magnitude)
+    {
+        // Backing up position of the camera
+        Vector3 originalPos = gameManager._camera.GetComponent<Camera>().transform.localPosition;
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            // Geting the strength using the animation curve
+            float strength = shakeCurve.Evaluate(elapsed / duration);
+            gameManager._camera.GetComponent<Camera>().transform.position = originalPos + Random.insideUnitSphere * strength;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        // Assigning the default camera position
+        gameManager._camera.GetComponent<Camera>().transform.localPosition = originalPos;
     }
 }

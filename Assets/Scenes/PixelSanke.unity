@@ -1580,7 +1580,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 1, g: 0.77254903, b: 0.5803922, a: 0}
+  m_BackGroundColor: {r: 0.34607512, g: 0.4939851, b: 0.7264151, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1634,7 +1634,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f6fddec636e9f0c4a9a8469c869d7d30, type: 3}
@@ -2612,8 +2612,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cceb20662f5a6de4b85ee498451116d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 13
-  columns: 15
+  rows: 14
+  columns: 18
   groundCount: 0
   nonGreenGround: []
   foodSpawnableArea: []

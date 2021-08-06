@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
     public GameUIManager uiManager;
 
     [Space]
+    [Header("Audio")]
     public AudioSource mainBgm;
 
     private float positionOffset = 0.5f;

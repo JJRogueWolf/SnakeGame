@@ -11,10 +11,11 @@ public class PixelSnakeControlls : MonoBehaviour
     public int gap = 100;
 
     public GameObject snakeBody;
-
+    [HideInInspector]
     public GameManager gameManager;
 
     private ContactPoint contactPoint;
+    [HideInInspector]
     public bool isHit = false;
     private Vector3 reflectDirection;
 
@@ -44,6 +45,7 @@ public class PixelSnakeControlls : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + transform.forward);
         if (!gameManager.isGameOver && !gameManager.isGamePause)
         {
+            //Character movement
             transform.Translate(Vector3.forward * snakeSpeed * Time.deltaTime);
             float hori = SimpleInput.GetAxis("Horizontal");
             transform.Rotate(Vector3.up * hori * Time.deltaTime);
@@ -62,7 +64,7 @@ public class PixelSnakeControlls : MonoBehaviour
             }
 
             lastPosition.Insert(0, transform.position);
-
+            //Body to follow the head
             int index = 0;
             foreach (var body in bodyParts)
             {
@@ -73,14 +75,10 @@ public class PixelSnakeControlls : MonoBehaviour
                 index++;
             }
         }
-
-        if (gameManager.isGamePause)
-        {
-            transform.localScale = new Vector3(Mathf.PingPong(1, 2), Mathf.PingPong(1, 2), Mathf.PingPong(1, 2));
-        }
     }
 
     void growBody(){
+        //add new Body 
         GameObject body = Instantiate(snakeBody, transform.position, Quaternion.identity);
         bodyParts.Add(body);
     }
@@ -95,6 +93,7 @@ public class PixelSnakeControlls : MonoBehaviour
             // Camera shake animation
             StartCoroutine(shake(1, 10));
             contactPoint = other.contacts[0];
+            //get reflect direction
             reflectDirection = Vector3.Reflect(transform.forward, contactPoint.normal);
             isHit = true;
             StartCoroutine(SmoothRotate(reflectDirection));
@@ -107,8 +106,11 @@ public class PixelSnakeControlls : MonoBehaviour
             growBody();
             audioSource.clip = eatAudio;
             audioSource.Play();
+            //boolean to enable next food spawn
             gameManager.isfoodSpawned = false;
+            //increment score
             gameManager.uiManager.score += 1;
+            //Scored collection effect
             gameManager.pizzaArtAnimator.SetBool("scored", true);
             StartCoroutine(Scored());
         }
@@ -119,6 +121,7 @@ public class PixelSnakeControlls : MonoBehaviour
             audioSource.Play();
             // Camera shake animation
             StartCoroutine(shake(1, 10));
+            //ending game
             StartCoroutine(EndGame());
 
             gameManager.isGamePause = true;
